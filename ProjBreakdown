@@ -17,23 +17,31 @@ UserManager (for account creation, editing, and deletion)
 StoreManager (for store creation and management)
 MessagingManager (for managing messaging between users)
 BlockingManager (for managing user blocking and invisibility)
+
+
 Role 1: User Interface and Application Control Flow
 
 Implement the main class that handles the user interface and application control flow.
 Handle user input and output via System.in and System.out.
 Coordinate with other roles to integrate their implementations with the user interface.
+
+
 Role 2: Account Management and User Permissions
 
 Implement the User, Seller, and Customer classes.
 Implement the UserManager class for account creation, editing, and deletion.
 Develop the user authentication and role-based permissions system.
 Coordinate with other roles to integrate their implementations with the account management system.
+
+
 Role 3: Messaging System and Core Features
 
 Implement the Message, Conversation, and MessagingManager classes.
 Develop the core messaging functionality and ensure appropriate access controls.
 Implement the FileHandler class for importing and exporting messages in text and CSV format.
 Coordinate with other roles to integrate their implementations with the messaging system.
+
+
 Role 4: Additional Features and Testing
 
 Implement the Dashboard class for sellers and customers.
@@ -47,35 +55,47 @@ Breakdown of each class that needs to be implemented:
 User
 Attributes: email, password, role, conversations, blockedUsers
 Methods: getEmail, getPassword, getRole, getConversations, getBlockedUsers, addConversation, blockUser, unblockUser, isBlocked
+
 Seller (extends User)
 Attributes: stores
 Methods: createStore, getStores, getStoreById, removeStore, updateStore
+
 Customer (extends User)
 Attributes: (inherits attributes from User)
 Methods: (inherits methods from User)
+
 Store
 Attributes: id, name, description, seller, messages
 Methods: getId, getName, setDescription, getSeller, getMessages, addMessage, removeMessage, updateMessage
+
 Message
 Attributes: sender, recipient, timestamp, content
 Methods: getSender, getRecipient, getTimestamp, getContent, setContent
+
 Conversation
 Attributes: participants, messages
 Methods: getParticipants, getMessages, addMessage, removeMessage, updateMessage
+
 FileHandler (for import and export of messages)
 Methods: exportMessagesToCSV, importMessagesFromText
+
 Dashboard (for sellers and customers)
 Attributes: user
 Methods: getSellerDashboard, getCustomerDashboard, sortDashboard
+
 UserManager (for account creation, editing, and deletion)
 Attributes: users
 Methods: createUser, getUser, updateUser, deleteUser, authenticateUser
+
 StoreManager (for store creation and management)
 Attributes: stores
 Methods: createStore, getStore, updateStore, deleteStore
+
 MessagingManager (for managing messaging between users)
 Attributes: conversations
 Methods: createConversation, getConversation, updateConversation, deleteConversation, sendMessage, editMessage, deleteMessage
+
 BlockingManager (for managing user blocking and invisibility)
 Methods: blockUser, unblockUser, isBlocked, makeInvisible, makeVisible, isInvisible
+
 Each of these classes should be designed with the Single Responsibility Principle in mind, ensuring that each class is responsible for a specific part of the functionality. This modular approach will make it easier to manage, maintain, and extend the codebase as needed.
