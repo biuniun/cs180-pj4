@@ -1,3 +1,14 @@
+/*
+TXT FILE FORMAT MUST BE:
+
+username245 // username
+password245 // respective password
+username123
+password123
+username768
+password768
+*/
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
