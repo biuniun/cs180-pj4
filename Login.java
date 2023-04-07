@@ -76,7 +76,7 @@ public class Login {
         String newPassword = scanner.nextLine();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write("\n" + newUsername + "\n" + newPassword); // Add a newline character before writing the new username
+            writer.write("\n" + newUsername + "\n" + newPassword);
             users.put(newUsername, newPassword);
             System.out.println("Registration successful!");
         } catch (IOException e) {
