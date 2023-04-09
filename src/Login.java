@@ -2,10 +2,13 @@
 TXT FILE FORMAT MUST BE:
 username245 // username
 password245 // respective password
+seller      // indication of customer or seller
 username123
 password123
+customer
 username768
 password768
+customer
 */
 
 import java.io.BufferedReader;
@@ -43,13 +46,13 @@ public class Login {
 
                 String password = reader.readLine();
                 if (password == null) {
-                    System.err.println("Error: Email " + email + " has no corresponding password.");
+                    System.err.println("Error: Email " + email + " has no corresponding password!");
                     break;
                 }
 
                 String userType = reader.readLine();
                 if (userType == null) {
-                    System.err.println("Error: Email " + email + " has no corresponding user type.");
+                    System.err.println("Error: Email " + email + " has no corresponding user type!");
                     break;
                 }
 
@@ -79,19 +82,19 @@ public class Login {
         String email = scanner.nextLine();
 
         if (!EMAIL_PATTERN.matcher(email).matches()) {
-            System.out.println("Invalid email format.");
+            System.out.println("Invalid email format!");
             return;
         }
 
         if (!users.containsKey(email)) {
-            throw new IllegalArgumentException("Email not found.");
+            throw new IllegalArgumentException("Email not found!");
         }
 
         System.out.println("Enter your password:");
         String password = scanner.nextLine();
 
         if (!password.equals(users.get(email))) {
-            throw new IllegalArgumentException("Incorrect password.");
+            throw new IllegalArgumentException("Incorrect password!");
         }
 
         System.out.println("Login successful!");
@@ -104,19 +107,19 @@ public class Login {
         String newEmail = scanner.nextLine();
 
         if (!EMAIL_PATTERN.matcher(newEmail).matches()) {
-            System.out.println("Invalid email format.");
+            System.out.println("Invalid email format!");
             return;
         }
 
         if (users.containsKey(newEmail)) {
-            System.out.println("Email already exists. Please choose a different one.");
+            System.out.println("Email already exists! Please choose a different one.");
             return;
         }
 
         System.out.println("Enter a new password:");
         String newPassword = scanner.nextLine();
 
-        System.out.println("Enter your user type (customer or seller):");
+        System.out.println("Are you a customer or seller? (enter 'customer' or 'seller'):");
         String userType = scanner.nextLine().toLowerCase();
         while (!userType.equals("customer") && !userType.equals("seller")) {
             System.out.println("Invalid user type. Please enter either 'customer' or 'seller':");
@@ -135,20 +138,20 @@ public class Login {
 
     public void deleteAccount(String email) {
         if (!users.containsKey(email)) {
-            System.out.println("Email not found.");
+            System.out.println("Email not found!");
             return;
         }
 
         users.remove(email);
         saveUserAccountsToFile();
-        System.out.println("Account deleted successfully.");
+        System.out.println("Account deleted successfully!");
     }
 
     public void editAccount(String email) {
         Scanner scanner = new Scanner(System.in);
 
         if (!users.containsKey(email)) {
-            System.out.println("Email not found.");
+            System.out.println("Email not found!");
             return;
         }
 
@@ -159,12 +162,12 @@ public class Login {
 
         if (!newEmail.isEmpty()) {
             if (!EMAIL_PATTERN.matcher(newEmail).matches()) {
-                System.out.println("Invalid email format.");
+                System.out.println("Invalid email format!");
                 return;
             }
 
             if (users.containsKey(newEmail)) {
-                System.out.println("Email already exists. Please choose a different one.");
+                System.out.println("Email already exists! Please choose a different one.");
                 return;
             }
             users.remove(email);
@@ -181,7 +184,7 @@ public class Login {
         }
 
         saveUserAccountsToFile();
-        System.out.println("Account updated successfully.");
+        System.out.println("Account updated successfully!");
     }
     
     private void saveUserAccountsToFile() {
@@ -199,7 +202,7 @@ public class Login {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter 1 to login, 2 to register, 3 to delete an account, or 4 to edit an account:");
         int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline left-over
+        scanner.nextLine();
 
         try {
             if (choice == 1) {
@@ -207,15 +210,15 @@ public class Login {
             } else if (choice == 2) {
                 login.registerUser();
             } else if (choice == 3) {
-                System.out.println("Enter the email of the account you want to delete:");
+                System.out.println("Enter the email of the account you wish to delete:");
                 String email = scanner.nextLine();
                 login.deleteAccount(email);
             } else if (choice == 4) {
-                System.out.println("Enter the email of the account you want to edit:");
+                System.out.println("Enter the email of the account you wish to edit:");
                 String email = scanner.nextLine();
                 login.editAccount(email);
             } else {
-                System.out.println("Invalid choice.");
+                System.out.println("Invalid choice!");
             }
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
