@@ -198,7 +198,7 @@ public class Login {
     }
 
         public static void main(String[] args) {
-        Login login = new Login("C:\\Users\\yasee\\IdeaProjects\\PJ04\\src\\usernameAndPasswords.txt");
+        Login login = new Login("ENTERFILENAME.txt"); // ENTER TXT FILE NAME HERE
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter 1 to login, 2 to register, 3 to delete an account, or 4 to edit an account:");
         int choice = scanner.nextInt();
