@@ -1,10 +1,17 @@
-package users;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+
+/**
+ * Seller
+ * 
+ * @author Matthew Rops mjrops
+ * @version 04-10-2023
+ */
+
 
 public class User {
     private static final String MESS_PATH = "file" + File.separator + "message.txt";

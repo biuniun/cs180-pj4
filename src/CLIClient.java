@@ -1,17 +1,14 @@
-package client;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
-import users.Customer;
-import users.Message;
-import users.NotSCException;
-import users.Roles;
-import users.Seller;
-import users.Store;
-import users.User;
+/**
+ * CLIClient
+ * 
+ * @author LK Niu niu61
+ * @version 04-10-2023
+ */
 
 public class CLIClient {
     private static final String WELCOME_STRING = "Welcome to IM System of Sharing Economy";
@@ -20,7 +17,7 @@ public class CLIClient {
     private static final String BYEBYE_STRING = "Bye-Bye!";
     private static final String OPERATION_LIST = SELECT + "1. Account Management\n2. Message\n3. Logout";
     private static final String ACCOUNT_MENU = SELECT
-            + "1. Edit Account\n2. Delete Account\n3. View Account Statistic\n4. Block Users";
+            + "1. Edit Account\n2. Delete Account\n3. Import/Output Text file\n4. Block Users";
 
     private static final String ACCOUNT_INFO_PATH = "file" + File.separator + "account_list.txt";
 

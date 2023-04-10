@@ -1,5 +1,3 @@
-package client;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -10,8 +8,13 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import users.Roles;
-import users.User;
+/**
+ * Seller
+ * 
+ * @author Yaseen Ali ali166
+ * @version 04-10-2023
+ */
+
 
 public class Login {
     private Map<String, User> users;

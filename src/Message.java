@@ -1,5 +1,3 @@
-package users;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +7,14 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+
+
+/**
+ * CLIClient
+ * 
+ * @author Matthew Rops mjrops
+ * @version 04-10-2023
+ */
 
 public class Message {
 	private static final String MESS_PATH = "file" + File.separator + "message.txt";

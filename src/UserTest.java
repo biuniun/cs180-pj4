@@ -1,11 +1,15 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import users.Roles;
-import users.User;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+/**
+ * Seller
+ * 
+ * @author Yaseen Ali ali166
+ * @version 04-10-2023
+ */
 
 public class UserTest {
     private User user;

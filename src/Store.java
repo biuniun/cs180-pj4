@@ -1,5 +1,3 @@
-package users;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -7,6 +5,11 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * @author LK Niu
+ * @version 04-10-2023
+ */
 
 public class Store {
     private Seller seller;

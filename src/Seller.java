@@ -1,6 +1,11 @@
-package users;
-
 import java.util.ArrayList;
+
+/**
+ * Seller
+ * 
+ * @author Matthew Rops mjrops
+ * @version 04-10-2023
+ */
 
 public class Seller extends User {
     public Seller(String email) {
