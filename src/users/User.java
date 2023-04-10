@@ -1,73 +1,73 @@
 package users;
 
+import java.io.File;
 import java.util.ArrayList;
 
-public class User 
-{
-    private int id;
-    private String username;
+public class User {
+    private static final String MESS_PATH = "file" + File.separator + "message";
+    private String email;
     private String password;
-    private String userType;
+    private Roles userType;
+    private Dashboard dashboard;
     private ArrayList<User> blockedUsers;
-    
-    public User(int id, String username, String password, String userType, ArrayList<User> blockedUsers)
-    {
-        this.id = id;
-        this.username = username;
+    private ArrayList<User> reciever;
+    private ArrayList<Message> history;
+
+    public User(String email, String password, Roles userType) {
+        this.email = email;
         this.password = password;
         this.userType = userType;
-        this.blockedUsers = blockedUsers;
+        this.dashboard = new Dashboard();
     }
-    
-    //Getters
-    public int getID()
-    {
-        return id;
+
+    // Getters
+    public String getEmail() {
+        return email;
     }
-    public String getUsername()
-    {
-        return username;
-    }
-    public String getPassword()
-    {
+
+    public String getPassword() {
         return password;
     }
-    public String getUserType()
-    {
+
+    public Roles getUserType() {
         return userType;
     }
-    public ArrayList<User> getBlockedUsers()
-    {
+
+    public ArrayList<User> getBlockedUsers() {
         return blockedUsers;
     }
-    
-    //Setters
-    public void setID(int id)
-    {
-        this.id = id;
+
+    public Dashboard getDashboard() {
+        return dashboard;
     }
-    public void getUsername(String username)
-    {
-        this.username = username;
+
+    // Setters
+
+    public void setEmail(String email) {
+        this.email = email;
     }
-    public void getPassword(String password)
-    {
+
+    public void setPassword(String password) {
         this.password = password;
     }
-    public void getUserType(String userType)
-    {
+
+    public void setUserType(Roles userType) {
         this.userType = userType;
     }
-    public void getBlockedUsers(ArrayList<User> blockedUsers)
-    {
+
+    public void setBlockedUsers(ArrayList<User> blockedUsers) {
         this.blockedUsers = blockedUsers;
     }
-    
-    //Methods
-    //Add a user to the blocked users list
-    public ArrayList<User> blockUsers(User user)
-    {
+
+    public void setDashboard(Dashboard dashboard) {
+        this.dashboard = dashboard;
+    }
+
+    // Methods
+    // Add a user to the blocked users list
+    public ArrayList<User> blockUsers(User user) {
         blockedUsers.add(user);
         return blockedUsers;
     }
+
 }

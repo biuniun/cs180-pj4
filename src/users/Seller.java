@@ -3,8 +3,8 @@ package users;
 import java.util.ArrayList;
 
 public class Seller extends User {    
-    public Seller(int id, String username, String password, String userType, ArrayList<User> blockedUsers)
+    public Seller(String email, String password)
     {
-        super(id, username, password, userType, blockedUsers);
+        super(email, password, Roles.Seller);
     }
 }

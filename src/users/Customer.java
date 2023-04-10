@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Customer extends User
 {    
-    public Customer(int id, String username, String password, String userType, ArrayList<User> blockedUsers)
+    public Customer(int id, String username, String password, ArrayList<User> blockedUsers)
     {
-        super(id, username, password, userType, blockedUsers);
+        super(username, password, Roles.Customer);
     }
 }
