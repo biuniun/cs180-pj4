@@ -27,7 +27,7 @@ public class Login {
 
     private boolean loadUsernamesAndPasswords() {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            reader.lines().forEach(l -> {
+            reader.lines().filter(s -> !s.isBlank()).forEach(l -> {
                 String[] sigs = l.split(";");
                 users.put(sigs[0], new User(sigs[0], sigs[1], Roles.valueOf(sigs[2])));
             });
@@ -46,7 +46,6 @@ public class Login {
     public String loginUser(Scanner scanner) {
         System.out.println("Enter your email:");
         String emailAdd = scanner.nextLine();
-        
 
         if (!users.containsKey(emailAdd)) {
             System.err.println("Username not found.");
@@ -150,10 +149,14 @@ public class Login {
         System.out.println("Account updated successfully!");
     }
 
-    private void saveUserAccountsToFile() {
+    public void saveUserAccountsToFile() {
+        for (User user : users.values()) {
+            user.loadBlockedList();
+        }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (User user : users.values()) {
-                writer.write(user.getEmail() + ";" + user.getPassword() + ";" + user.getUserType().name() + "\n");
+                writer.write(user.getEmail() + ";" + user.getPassword() + ";" + user.getUserType().name() + ";" + String
+                        .join(",", user.getBlockedUsers().stream().map(s -> s.getEmail()).toArray(String[]::new)) + "\n");
             }
         } catch (IOException e) {
             System.err.println("Error writing to a file: " + e.getMessage());
