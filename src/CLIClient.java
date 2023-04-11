@@ -41,7 +41,7 @@ public class CLIClient {
         while (!close) {
             // login and registration
             while (uid == null)
-                uid = login(scanner, login);
+                uid = loginService(scanner, login);
             if (uid.equals("|"))
                 return;
             boolean sessionAlive = true;
@@ -234,9 +234,9 @@ public class CLIClient {
             System.out.println(SELECT + "1. Import\n2. Export");
             int in = inToOpt(scanner, 1, 2);
             if (in == 1)
-                Import(scanner);
+                importTo(scanner);
             else if (in == 2)
-                Export(scanner, user);
+                export(scanner, user);
         }
         if (input == 4) {
             System.out.println("Provide the email address of the user you would like to block.");
@@ -261,7 +261,7 @@ public class CLIClient {
         return true;
     }
 
-    private static void Import(Scanner scanner) {
+    private static void importTo(Scanner scanner) {
         System.out.println("Provide the the filename of the conversation");
         System.out.println("Each line of the file must follows the standard Protocol as follow");
         System.out.println("\t[SellerEmail:String];;[CostumerEmail:String];;[Direction:bool];;"
@@ -278,7 +278,7 @@ public class CLIClient {
         Message.tidy();
     }
 
-    private static void Export(Scanner scanner, User user) {
+    private static void export(Scanner scanner, User user) {
         System.out.println("Whose Conversation you would like to export?");
         String dest = scanner.nextLine();
         if (!userMap.containsKey(dest)) {
@@ -308,7 +308,7 @@ public class CLIClient {
         }
     }
 
-    private static String login(Scanner scanner, Login login) {
+    private static String loginService(Scanner scanner, Login login) {
         String uid = null;
         System.out.println(LOGIN_MENU);
         int option = inToOpt(scanner, 1, 3);

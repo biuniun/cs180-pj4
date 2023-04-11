@@ -37,7 +37,7 @@ public class Message {
 	}
 
 	public Message(Seller seller, Customer customer, String message, boolean sellerVis,
-			boolean customerVis, boolean sender) {
+					boolean customerVis, boolean sender) {
 		this.seller = seller;
 		this.customer = customer;
 		this.message = message;
@@ -143,8 +143,8 @@ public class Message {
 		if (!(o instanceof Message)) {
 			return false;
 		}
-		Message message = (Message) o;
-		return message.getTime() == this.getTime() && message.isSender() == this.isSender();
+		Message m = (Message) o;
+		return m.getTime() == this.getTime() && m.isSender() == this.isSender();
 	}
 
 	public static boolean tidy() {
