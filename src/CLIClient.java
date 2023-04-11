@@ -308,7 +308,7 @@ public class CLIClient {
         }
     }
 
-    private static String loginService(Scanner scanner, Login login) {
+    private static String loginService(Scanner scanner, Login lg) {
         String uid = null;
         System.out.println(LOGIN_MENU);
         int option = inToOpt(scanner, 1, 3);
@@ -317,9 +317,9 @@ public class CLIClient {
             return "|";
         }
         if (option == 1)
-            uid = login.loginUser(scanner);
+            uid = lg.loginUser(scanner);
         if (option == 2)
-            login.registerUser(scanner);
+            lg.registerUser(scanner);
         return uid;
     }
 
