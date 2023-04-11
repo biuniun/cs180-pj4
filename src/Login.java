@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
  * @version 04-10-2023
  */
 
-
 public class Login {
     private Map<String, User> users;
     private String filePath;
@@ -33,6 +32,8 @@ public class Login {
             reader.lines().filter(s -> !s.isBlank()).forEach(l -> {
                 String[] sigs = l.split(";");
                 users.put(sigs[0], new User(sigs[0], sigs[1], Roles.valueOf(sigs[2])));
+                users.get(sigs[0]).loadBlockedList();
+                users.get(sigs[0]).loadNotSeeList();
             });
 
             return true;
@@ -44,6 +45,10 @@ public class Login {
 
     public Map<String, User> getUsers() {
         return users;
+    }
+
+    public void setUser(Map<String, User> map) {
+        this.users = map;
     }
 
     public String loginUser(Scanner scanner) {
@@ -153,13 +158,23 @@ public class Login {
     }
 
     public void saveUserAccountsToFile() {
-        for (User user : users.values()) {
-            user.loadBlockedList();
-        }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (User user : users.values()) {
-                writer.write(user.getEmail() + ";" + user.getPassword() + ";" + user.getUserType().name() + ";" + String
-                        .join(",", user.getBlockedUsers().stream().map(s -> s.getEmail()).toArray(String[]::new)) + "\n");
+                String blocked = "";
+                String notSeen = "";
+                for (int i = 0; i < user.getBlockedUsers().size(); i++) {
+                    blocked += user.getBlockedUsers().get(i);
+                    if (i < user.getBlockedUsers().size() - 1)
+                        blocked += ",";
+                }
+                for (int i = 0; i < user.getNoSeeList().size(); i++) {
+                    notSeen += user.getNoSeeList().get(i);
+                    if (i < user.getBlockedUsers().size() - 1)
+                        notSeen += ",";
+                }
+                writer.write(user.getEmail() + ";" + user.getPassword() + ";" + user.getUserType().name() + ";"
+                        + blocked + ";"
+                        + notSeen + "\n");
             }
         } catch (IOException e) {
             System.err.println("Error writing to a file: " + e.getMessage());

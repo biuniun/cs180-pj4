@@ -6,7 +6,11 @@
  */
 
 public class ClientStart {
-	public static void main(String[] args) {
-        CLIClient.run();
+    public static void main(String[] args) {
+        try {
+            CLIClient.run();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

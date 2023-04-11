@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 
-
 /**
  * CLIClient
  * 
@@ -155,7 +154,7 @@ public class Message {
 				Message m = new Message(s);
 				if (messages.contains(m))
 					messages.set(messages.indexOf(m), m);
-				else 
+				else
 					messages.add(m);
 			});
 		} catch (Exception e) {
@@ -164,12 +163,14 @@ public class Message {
 		}
 
 		try (PrintWriter pw = new PrintWriter(new FileOutputStream(new File(MESS_PATH), false), true)) {
-			messages.forEach(c -> pw.print(c.fileExport()));
+			messages.stream().sorted((m1, m2) -> Long.compare(m1.getTime(), m2.getTime()))
+					.map(s -> s.fileExport())
+					.forEach(pw::print);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		return true;
 	}
 

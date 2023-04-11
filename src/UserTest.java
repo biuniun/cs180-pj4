@@ -1,8 +1,7 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Seller
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class UserTest {
     private User user;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         user = new User("test@example.com", "password123", Roles.Customer);
     }

@@ -1,4 +1,9 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
@@ -17,12 +22,13 @@ public class CLIClient {
     private static final String BYEBYE_STRING = "Bye-Bye!";
     private static final String OPERATION_LIST = SELECT + "1. Account Management\n2. Message\n3. Logout";
     private static final String ACCOUNT_MENU = SELECT
-            + "1. Edit Account\n2. Delete Account\n3. Import/Output Text file\n4. Block Users";
+            + "1. Edit Account\n2. Delete Account\n3. Import/Output Text file\n4. Block Users\n5. Hide From User";
 
     private static final String ACCOUNT_INFO_PATH = "file" + File.separator + "account_list.txt";
+    private static final String MESS_PATH = "file" + File.separator + "message.txt";
 
     private static Login login = new Login(ACCOUNT_INFO_PATH);
-    private static Map<String, User> usermap = login.getUsers();
+    private static Map<String, User> userMap = login.getUsers();
 
     public static void run() {
         System.out.println(WELCOME_STRING);
@@ -40,15 +46,16 @@ public class CLIClient {
                 return;
             boolean sessionAlive = true;
             while (sessionAlive) {
-                if (usermap.get(uid).getUserType().equals(Roles.Customer))
+                if (userMap.get(uid).getUserType().equals(Roles.Customer))
                     sessionUser = new Customer(uid);
                 else
                     sessionUser = new Seller(uid);
                 sessionAlive = operations(scanner, sessionUser);
             }
             uid = null;
+            login.saveUserAccountsToFile();
         }
-        login.saveUserAccountsToFile();
+
         scanner.close();
     }
 
@@ -79,32 +86,53 @@ public class CLIClient {
                     System.out.println("Loading Stores");
                     Map<String, String> map = Store.getStores();
                     int m = 0;
-                    System.out.println(SELECT);
+                    System.out.print(SELECT);
                     String[] sellers = map.keySet().toArray(String[]::new);
                     for (String k : sellers) {
-                        System.out.println((m + 1) + ". Store: " + k + "Seller: " + map.get(k));
+                        System.out.println((++m) + ". Store: " + k + "\n   Seller: " + map.get(k));
                     }
-
-                    dest = map.get(sellers[inToOpt(scanner, 1, m) - 1]);
+                    System.out.println("Or you can start the conversation by searching the email by pressing " + ++m);
+                    int buf = inToOpt(scanner, 1, m) - 1;
+                    if (buf == m - 1)
+                        while (dest == null || dest.isBlank()) {
+                            dest = scanner.nextLine();
+                            if (!userMap.values().contains(new Customer(dest)) || user.getNoSeeList().contains(dest)) {
+                                System.err.println("Email not found, Please Input Again.");
+                                dest = null;
+                            }
+                        }
+                    else
+                        dest = map.get(sellers[buf - 1]);
                 }
                 if (sell == 1) {
-                    System.out.println("Printing Custumers:");
-                    usermap.values().stream().filter(s -> s.getUserType().equals(Roles.Customer))
-                            .forEach(System.out::println);
-
-                    System.out.println("Please provide the destination email.");
-                    while (dest.isBlank()) {
-                        dest = scanner.nextLine();
-                        if (!usermap.values().contains(new Customer(dest))) {
-                            System.err.println("Email not found");
-                            dest = null;
-                        }
+                    System.out.println("Printing Customers:");
+                    User[] arr = userMap.values().stream()
+                            .filter(s -> s.getUserType().equals(Roles.Customer))
+                            .toArray(User[]::new);
+                    int k = 0;
+                    for (int j = 0; j < arr.length; j++) {
+                        if (arr[j].getUserType().equals(Roles.Customer))
+                            System.out.println((++k) + ". " + arr[j].getEmail());
                     }
+                    System.out.println(
+                            "Or you can start the conversation by searching the email by pressing " + ++k);
+                    int buf = inToOpt(scanner, 1, k) - 1;
+                    if (buf == arr.length) {
+                        System.out.println("Please provide the destination email.");
+                        while (dest.isBlank()) {
+                            dest = scanner.nextLine();
+                            if (!userMap.values().contains(new Customer(dest)) && user.getNoSeeList().contains(dest)) {
+                                System.err.println("Email not found, Please input again");
+                                dest = null;
+                            }
+                        }
+                    } else
+                        dest = arr[buf].getEmail();
                 }
 
                 if (checkAccount(dest))
                     try {
-                        return sendMassage(scanner, user, usermap.get(dest));
+                        return sendMassage(scanner, user, userMap.get(dest));
                     } catch (NotSCException e) {
                         System.out.println(e);
                         return true;
@@ -152,7 +180,7 @@ public class CLIClient {
             return Message.tidy();
         }
         if (input == 4 && sell == 1) {
-            System.out.println("Please input your store name:");
+            System.out.println("Please input your store name:sender");
             new Store(new Seller(user.getEmail()), scanner.nextLine());
             return true;
         }
@@ -161,7 +189,7 @@ public class CLIClient {
     }
 
     private static boolean checkAccount(String address) {
-        return usermap.containsKey(address);
+        return userMap.containsKey(address);
     }
 
     private static boolean sendMassage(Scanner scanner, User sender, User dest) throws NotSCException {
@@ -172,7 +200,8 @@ public class CLIClient {
             throw new NotSCException(
                     "Error: Do not send to " + sender.getUserType().name() + " as a " + sender.getUserType().name());
         }
-        if (dest.getBlockedUsers().contains(sender)) {
+        dest.loadBlockedList();
+        if (dest.getBlockedUsers().contains(sender.getEmail())) {
             System.out.println("You been blocked by the user.");
             return true;
         }
@@ -201,19 +230,82 @@ public class CLIClient {
             new Login(ACCOUNT_INFO_PATH).deleteAccount(user.getEmail());
             return false;
         }
-        if (input == 3)
-            ;
+        if (input == 3) {
+            System.out.println(SELECT + "1. Import\n2. Export");
+            int in = inToOpt(scanner, 1, 2);
+            if (in == 1)
+                Import(scanner);
+            else if (in == 2)
+                Export(scanner, user);
+        }
         if (input == 4) {
             System.out.println("Provide the email address of the user you would like to block.");
             String dest = scanner.nextLine();
-            if (!usermap.values().contains(new Customer(dest))) {
+            if (!userMap.values().contains(new Customer(dest))) {
                 System.err.println("Email not found");
                 dest = null;
             }
 
-            user.blockUsers(new User(dest, null));
+            userMap.get(user.getEmail()).blockUsers(userMap.get(dest));
+        }
+        if (input == 5) {
+            System.out.println("Provide the email you would like to hide from: ");
+            String dest = scanner.nextLine();
+            if (!userMap.values().contains(new Customer(dest))) {
+                System.err.println("Email not found");
+                dest = null;
+            }
+
+            userMap.get(dest).canNotSee(user);
         }
         return true;
+    }
+
+    private static void Import(Scanner scanner) {
+        System.out.println("Provide the the filename of the conversation");
+        System.out.println("Each line of the file must follows the standard Protocol as follow");
+        System.out.println("\t[SellerEmail:String];;[CostumerEmail:String];;[Direction:bool];;"
+                + "[Message:String];;[TimeStamp::long];;[VisibleToSeller:boolean];;[VisibleToCostumers:boolean]");
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(scanner.nextLine())));
+                PrintWriter pw = new PrintWriter(new FileWriter(new File(MESS_PATH), true), true)) {
+            br.lines().map(s -> new Message(s).fileExport()).forEach(pw::println);
+        } catch (IOException e) {
+            System.err.println("File is not available!");
+        } catch (Exception e) {
+            System.out.println("Please Match your format");
+        }
+
+        Message.tidy();
+    }
+
+    private static void Export(Scanner scanner, User user) {
+        System.out.println("Whose Conversation you would like to export?");
+        String dest = scanner.nextLine();
+        if (!userMap.containsKey(dest)) {
+            System.err.println("Email not found");
+            dest = null;
+        }
+        User de = userMap.get(dest);
+
+        System.out.println("Provide the name of your file, exclude the format attribute");
+        try (PrintWriter pw = new PrintWriter(scanner.nextLine() + ".csv")) {
+            user.loadMessage();
+            ArrayList<Message> m = user.getCon(de);
+            for (Message row : m) {
+                String[] columns = row.fileExport().split(";;");
+
+                // Write each column to the CSV file
+                for (int i = 0; i < columns.length; i++) {
+                    pw.write(columns[i]);
+                    if (i < columns.length - 1) {
+                        pw.write(",");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
     }
 
     private static String login(Scanner scanner, Login login) {
@@ -244,6 +336,5 @@ public class CLIClient {
                         start, end);
             }
         }
-
     }
 }
