@@ -1,10 +1,15 @@
-package users;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+/**
+ * Seller
+ * 
+ * @author Matthew Rops mjrops
+ * @version 04-10-2023
+ */
 
 public class User {
     private static final String MESS_PATH = "file" + File.separator + "message.txt";
@@ -12,16 +17,22 @@ public class User {
     private String email;
     private String password;
     private Roles userType;
-    private ArrayList<User> blockedUsers;
-    private ArrayList<User> recievers;
+    private boolean blockListLoaded;
+    private boolean notSeeLoaded;
+    private ArrayList<String> blockedUsers;
+    private ArrayList<User> receivers;
     private ArrayList<Message> history;
+    private ArrayList<String> noSee;
 
     public User(String email, Roles userType) {
         this.email = email;
         this.userType = userType;
-        this.recievers = new ArrayList<>();
+        this.receivers = new ArrayList<>();
         this.history = new ArrayList<>();
         this.blockedUsers = new ArrayList<>();
+        this.noSee = new ArrayList<>();
+        this.blockListLoaded = false;
+        this.notSeeLoaded = false;
     }
 
     public User(String email, String password, Roles userType) {
@@ -42,22 +53,45 @@ public class User {
         return userType;
     }
 
-    public ArrayList<User> getBlockedUsers() {
+    public ArrayList<String> getBlockedUsers() {
         return blockedUsers;
     }
 
+    public ArrayList<String> getNoSeeList() {
+        return noSee;
+    }
 
     public void loadBlockedList() {
+        if (blockListLoaded)
+            return;
         try (BufferedReader br = new BufferedReader(new FileReader(new File(ACCOUNT_INFO_PATH)))) {
             br.lines().filter(s -> s.split(";")[0].equals(this.getEmail())).forEach(l -> {
                 String[] args = l.split(";");
                 if (args.length > 3) {
                     String s = args[3];
-                    Arrays.asList(s.split(",")).forEach(p -> blockedUsers.add(new User(p, null)));
+                    Arrays.asList(s.split(",")).forEach(blockedUsers::add);
                 }
             });
+            blockListLoaded = true;
         } catch (Exception e) {
             System.err.println(e);
+        }
+    }
+
+    public void loadNotSeeList() {
+        if (notSeeLoaded)
+            return;
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(ACCOUNT_INFO_PATH)))) {
+            br.lines().filter(s -> s.split(";")[0].equals(this.getEmail())).forEach(l -> {
+                String[] args = l.split(";");
+                if (args.length > 4) {
+                    String s = args[4];
+                    Arrays.asList(s.split(",")).forEach(noSee::add);
+                }
+            });
+            notSeeLoaded = true;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 
@@ -75,12 +109,8 @@ public class User {
         this.userType = userType;
     }
 
-    public void setBlockedUsers(ArrayList<User> blockedUsers) {
-        this.blockedUsers = blockedUsers;
-    }
-
     public ArrayList<User> getReceiver() {
-        return recievers;
+        return receivers;
     }
 
     public ArrayList<Message> getHistory() {
@@ -90,7 +120,11 @@ public class User {
     // Methods
     // Add a user to the blocked users list
     public void blockUsers(User user) {
-        blockedUsers.add(user);
+        blockedUsers.add(user.getEmail());
+    }
+
+    public void canNotSee(User user) {
+        noSee.add(user.getEmail());
     }
 
     // Load Conversation From List
@@ -99,11 +133,11 @@ public class User {
             br.lines().filter(s -> !s.isBlank()).forEach(s -> {
                 Message m = new Message(s);
                 if (this.equals(m.getCustomer()) && m.getCustomerVis()
-                        && !recievers.contains(m.getSeller())) {
-                    recievers.add(m.getSeller());
+                        && !receivers.contains(m.getSeller()) && !noSee.contains(m.getMessage())) {
+                    receivers.add(m.getSeller());
                 } else if (this.equals(m.getSeller()) && m.getSellerVis()
-                        && !recievers.contains(m.getCustomer())) {
-                    recievers.add(m.getCustomer());
+                        && !receivers.contains(m.getCustomer()) && !noSee.contains(m.getMessage())) {
+                    receivers.add(m.getCustomer());
                 }
                 history.add(m);
                 // if (recievers.contains())
