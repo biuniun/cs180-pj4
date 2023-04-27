@@ -17,23 +17,36 @@ Lab Report: Matthew Rops mjrops
 Functionalities of the system
 
 ### CLIClient.java
-The running and coordination class, it also contains the functionality of file import and export. 
+The running and coordination class, it also contains the functionality of file import and export.
+
 ### ClientStart.java
 The starter class
+
 ### Login.java
 Handling login and user operations.
+
 ### Message.java
 The message data sturcture. It contains necessary methods for a message to be read and store.
+
 ### NotSCException
 Throws when same roles user sending message to each others.
-### Role
-the enumerate class identify the role of users.
-### Seller.java(Extended User)
+
+
+**Role Class**
+
+The enumerate class identify the role of users.
+
+
+**Seller.java(Extended User)**
+
 The seller account and formats with specified methods further implement or overwrite the User class.
+
 ### Store.java (Extended User)
 The store encapsulate the sellers with specified methods further implement or overwrite the User class.
+
 ### User.java
 The class encapsulate users activity and service.
+
 ### UserTest.java 
 The class of test case.
 
